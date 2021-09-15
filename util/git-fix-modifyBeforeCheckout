@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# smudge the files 
+#
+utildir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+fixbasedir="$(dirname "$utildir")"
+source $utildir/rrfs_fix_locations.sh
+
+qing_it=false
+#echo "modifyBeforeCheckout $@" >&2
+filepath="$@"
+#stdin -> stdout
+firstline=true
+while read myline; do
+  if $firstline && [[ $myline == "$RRFS_FIX_LOCATION/"* ]]; then
+    myline=$RRFS_FIX_LOCATION/${myline#*/}
+  fi
+  echo "$myline"
+  firstline=false
+done  < /dev/stdin

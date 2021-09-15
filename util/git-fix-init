@@ -1,0 +1,17 @@
+#!/bin/sh
+# initialize git-fix service
+#   --Guoqing 20210912, adapted and simplified from https://github.com/git-qing/git-qing
+#
+utildir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+fixbasedir="$(dirname "$utildir")"
+
+# add the smudge and clean filter methods
+git config --replace-all filter.qing.smudge "$utildir/git-fix-modifyBeforeCheckout %f"
+git config --replace-all filter.qing.clean "$utildir/git-fix-modifyBeforeCommit %f"
+
+# add the qing filter (.git/info/attributes)
+echo -e "#Add the qing filter. DO NOT REMOVE!\n* filter=qing\n" > $fixbasedir/.git/info/attributes
+# set the pre-commit hook
+echo -e "#!/bin/sh" > $fixbasedir/.git/hooks/pre-commit
+chmod +x $fixbasedir/.git/hooks/pre-commit
+echo -e "$utildir/git-fix-preCommit">>$fixbasedir/.git/hooks/pre-commit

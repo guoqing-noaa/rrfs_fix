@@ -1,0 +1,56 @@
+#!/bin/sh
+#
+# smudge the files 
+#
+MAXFSIZE="1" #unit kb
+TEXTTYPE="ASCII text"
+#
+utildir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+fixbasedir="$(dirname "$utildir")"
+source $utildir/rrfs_fix_locations.sh
+
+function QingOrNot {
+  local filepath="${1%/}"
+  local filetype=$(file $filepath)
+  if [[ "$filetye" == *"symbolic link"* ]]; then
+     local mylink=$(readlink $filepath)
+     if [[ "$mylink" == "$RRFS_FIX_LOCATION"* ]]; then
+       if_qing=true
+     fi
+  else #not a link
+    if [ -n "$MAXFSIZE" ] && [ "$MAXFSIZE" -eq "$MAXFSIZE" ] 2>/dev/null; then #check if $MAXFSIZE is a number
+      local qattr=$(( $MAXFSIZE * 1024 )) #conver to bytes
+      local filesize=$(du -b $filepath 2>/dev/null |cut -f1  2>/dev/null)
+      if [ -z $filesize ]; then filesize=0; fi
+      if [[ $filesize -gt $qattr ]] && [[ ! "$filetype" == *"$TEXTTYPE"* ]]; then
+        if_large=true
+      fi
+    else
+      echo "Bad MAXFSIZE setting" >&2
+      if_large=true # set to true and let users handle it
+    fi
+  fi
+}
+
+function knot_it {
+  local filepath="${1%/}"
+  local mylink=$(readlink $filepath)
+  local mylink="\$RRFS_FIX_LOCATION"/${mylink#$RRFS_FIX_LOCATION/}
+  echo $mylink
+}
+
+#======================================entry here====================================================
+if_qing=false
+if_large=false
+filepath="$@"
+set -x
+QingOrNot $filepath #set if_qing to true if it is a link to RRFS_FIX_LOCATION
+if $if_large; then
+  echo "!!! $filepath is a large binary file and should be trackted through a link !!!" >&2
+elif $if_qing ; then
+  knot_it $filepath #return the normalized link
+else
+  while read myline; do
+    echo "$myline"
+  done  < /dev/stdin
+fi
