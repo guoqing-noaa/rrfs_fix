@@ -1,6 +1,6 @@
 #!/bin/bash
 MAXFSIZE="1" #unit kb
-TEXTTYPE="ASCII text"
+TEXTTYPE="text"
 #
 function LargeOrNot {
   local filepath="${1%/}"
