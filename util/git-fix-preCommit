@@ -22,7 +22,8 @@ while read line; do  # <$tmpdir/files.changed
     if_large=false
     LargeOrNot $myfile #check if it is a large binary file
     if $if_large; then
-      echo "!!! $filepath is a large binary file and should be trackted through a link !!!" >&2
+      echo "!!! $myfile is a large binary file and should be trackted through a link !!!" >&2
+      echo " commit failed. " >&2
       exit 1 #stop the commit
     fi
   fi
