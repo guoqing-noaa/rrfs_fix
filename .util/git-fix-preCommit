@@ -16,15 +16,20 @@ if [ $ierr -ne 0 ]; then
   exit 1 #stop the commit
 fi
 
+has_large=false
 while read line; do  # <$tmpdir/files.changed
   if [ ! -z "$line" ]; then
     myfile=$(echo "${line}" |xargs)  #trim leading whitespaces
     if_large=false
     LargeOrNot $myfile #check if it is a large binary file
     if $if_large; then
-      echo "!!! $myfile is a large binary file and should be trackted through a link !!!" >&2
-      echo " commit failed. " >&2
-      exit 1 #stop the commit
+      echo "$myfile is a large binary file and should be trackted through a link." >&2
+      has_large=true
     fi
   fi
 done < $tmpdir/files.changed
+
+if $has_large; then
+  echo " commit failed. " >&2
+  exit 1 #stop the commit
+fi
