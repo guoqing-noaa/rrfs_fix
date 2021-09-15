@@ -11,3 +11,4 @@ chmod +x $basedir/.git/hooks/pre-commit
 echo -e "$utildir/git-fix-preCommit">>$basedir/.git/hooks/pre-commit
 
 $utildir/make_link
+touch $basedir/DONE
