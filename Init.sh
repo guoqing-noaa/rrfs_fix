@@ -3,7 +3,7 @@
 #   --Guoqing Ge, 20210912
 #
 basedir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-utildir="$utildir"/.util
+utildir="$basedir"/.util
 
 # set the pre-commit hook
 echo -e "#!/bin/sh" > $basedir/.git/hooks/pre-commit
