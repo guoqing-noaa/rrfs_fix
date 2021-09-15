@@ -2,8 +2,8 @@
 # initialize rrfs_fix
 #   --Guoqing Ge, 20210912
 #
-utildir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-basedir="$(dirname "$utildir")"
+basedir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+utildir="$utildir"/.util
 
 # set the pre-commit hook
 echo -e "#!/bin/sh" > $basedir/.git/hooks/pre-commit
