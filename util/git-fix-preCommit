@@ -1,0 +1,29 @@
+#!/bin/sh
+# pre-commit hook
+#
+utildir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+basedir="$(dirname "$utildir")"
+source $utildir/common.sh
+tmpdir=$basedir/.git/tmp
+mkdir -p "$tmpdir"
+#
+#pre-commit operations
+#
+# get staged files except those deleted
+ierr=$(git diff --diff-filter=d --cached --name-only 1>$tmpdir/files.changed 2>/dev/null; echo $? )
+if [ $ierr -ne 0 ]; then
+  echo "fatal: fail to run git diff --diff-filter=d --cached --name-only"
+  exit 1 #stop the commit
+fi
+
+while read line; do  # <$tmpdir/files.changed
+  if [ ! -z "$line" ]; then
+    myfile=$(echo "${line}" |xargs)  #trim leading whitespaces
+    if_large=false
+    LargeOrNot $myfile #check if it is a large binary file
+    if $if_large; then
+      echo "!!! $filepath is a large binary file and should be trackted through a link !!!" >&2
+      exit 1 #stop the commit
+    fi
+  fi
+done < $tmpdir/files.changed

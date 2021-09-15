@@ -5,8 +5,7 @@
 utildir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 fixbasedir="$(dirname "$utildir")"
 
-# add the smudge and clean filter methods
-git config --replace-all filter.qing.smudge "$utildir/git-fix-modifyBeforeCheckout %f"
+# add the clean filter method (smudge is not required for this implementation)
 git config --replace-all filter.qing.clean "$utildir/git-fix-modifyBeforeCommit %f"
 
 # add the qing filter (.git/info/attributes)

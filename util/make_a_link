@@ -1,0 +1,11 @@
+#!/bin/sh
+utildir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+fixbasedir="$(dirname "$utildir")"
+agentdir="$fixbasedir/.agent"
+source $utildir/rrfs_fix_locations.sh
+
+filetype=$(file $agentdir)
+if [[ ! "$filetype" == *"symbolic link"* ]]; then
+  rm -rf $agentdir
+fi
+ln -snf $RRFS_FIX_LOCATION $agentdir
