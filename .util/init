@@ -1,5 +1,5 @@
 #!/bin/sh
-# initialize git-fix service
+# initialize rrfs_fix
 #   --Guoqing Ge, 20210912
 #
 utildir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
